@@ -168,3 +168,6 @@ def import_ter(context, filepath):
         print('Terrain imported!')
 
     return {'FINISHED'}
+
+    if __name__ == "__main__":
+        register()

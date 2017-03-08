@@ -25,6 +25,12 @@ import string
 import struct
 import os  # glob
 from os import path, name, sep
+from .ter_importer import import_ter
+# ImportHelper is a helper class, defines filename and
+# invoke() function which calls the file selector.
+from bpy_extras.io_utils import ImportHelper
+from bpy.props import StringProperty, BoolProperty, EnumProperty
+from bpy.types import Operator
 
 
 bl_info = {
@@ -37,13 +43,6 @@ bl_info = {
     "warning": "This addon is still in development.",
     "wiki_url": "",
     "category": "Import-Export"}
-
-
-# ImportHelper is a helper class, defines filename and
-# invoke() function which calls the file selector.
-from bpy_extras.io_utils import ImportHelper
-from bpy.props import StringProperty, BoolProperty, EnumProperty
-from bpy.types import Operator
 
 
 class ImportTer(Operator, ImportHelper):
@@ -78,7 +77,6 @@ class ImportTer(Operator, ImportHelper):
     '''
 
     def execute(self, context):
-        from . import ter_importer
         return import_ter(context, self.filepath)
 
 
