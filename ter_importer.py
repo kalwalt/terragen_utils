@@ -27,9 +27,11 @@ import os  # glob
 from os import path, name, sep
 from math import *
 import bmesh
+import time
 
 
 def import_ter(context, filepath):
+    start_time = time.process_time()
 
     global size
 
@@ -165,7 +167,7 @@ def import_ter(context, filepath):
         scene = bpy.context.scene
         obj = bpy.data.objects.new("Terrain_obj", mesh)
         scene.objects.link(obj)
-        print('Terrain imported!')
+        print('Terrain imported in %.4f sec.' % (time.process_time() - start_time))
 
     return {'FINISHED'}
 
