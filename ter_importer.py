@@ -28,17 +28,6 @@ from os import path, name, sep
 from math import *
 import bmesh
 
-bl_info = {
-    "name": "Terragen utils",
-    "description": "addon to import/export .ter files",
-    "author": "Walter Perdan",
-    "version": (0, 0, 1),
-    "blender": (2, 78, 0),
-    "location": "File > Import-Export",
-    "warning": "This addon is still in development.",
-    "wiki_url": "",
-    "category": "Import-Export"}
-
 
 def import_ter(context, filepath):
 
@@ -179,65 +168,3 @@ def import_ter(context, filepath):
         print('Terrain imported!')
 
     return {'FINISHED'}
-
-
-# ImportHelper is a helper class, defines filename and
-# invoke() function which calls the file selector.
-from bpy_extras.io_utils import ImportHelper
-from bpy.props import StringProperty, BoolProperty, EnumProperty
-from bpy.types import Operator
-
-
-class ImportTer(Operator, ImportHelper):
-    """Operator to import .ter Terragen files into blender as obj"""
-    bl_idname = "import_ter.data"
-    bl_label = "Import .ter"
-
-    # ImportHelper mixin class uses this
-    filename_ext = ".ter"
-
-    filter_glob = StringProperty(
-            default="*.ter",
-            options={'HIDDEN'},
-            maxlen=255,  # Max internal buffer length, longer would be clamped.
-            )
-
-    '''
-    # List of operator properties, the attributes will be assigned
-    # to the class instance from the operator settings before calling.
-    use_setting = BoolProperty(
-            name="Example Boolean",
-            description="Example Tooltip",
-            default=True,
-            )
-
-    type = EnumProperty(
-            name="Example Enum",
-            description="Choose between two items",
-            items=(('OPT_A', "First Option", "Description one"),
-                   ('OPT_B', "Second Option", "Description two")),
-            default='OPT_A',
-            )
-    '''
-
-    def execute(self, context):
-        return import_ter(context, self.filepath)
-
-
-# Only needed if you want to add into a dynamic menu
-def menu_func_import(self, context):
-    self.layout.operator(ImportTer.bl_idname, text="Terragen Import Operator")
-
-
-def register():
-    bpy.utils.register_class(ImportTer)
-    bpy.types.INFO_MT_file_import.append(menu_func_import)
-
-
-def unregister():
-    bpy.utils.unregister_class(ImportTer)
-    bpy.types.INFO_MT_file_import.remove(menu_func_import)
-
-
-if __name__ == "__main__":
-    register()
