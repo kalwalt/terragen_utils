@@ -84,7 +84,7 @@ class ImportTer(Operator, ImportHelper):
 
 # Only needed if you want to add into a dynamic menu
 def menu_func_import(self, context):
-    self.layout.operator(ImportTer.bl_idname, text="Terragen Import Operator")
+    self.layout.operator(ImportTer.bl_idname, text="Terragen (.ter)")
 
 
 def register():
