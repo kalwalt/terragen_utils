@@ -30,10 +30,11 @@ import bmesh
 import time
 
 
-def import_ter(context, filepath, triangulate):
+def import_ter(context, filepath, triangulate, custom_properties,
+               custom_scale, baseH, heightS):
     start_time = time.process_time()
 
-    # global size
+    # variables initialization
     size = 0
     xpts = 0
     ypts = 0
@@ -121,22 +122,41 @@ def import_ter(context, filepath, triangulate):
         print('\n-----------------\n')
         print('size is: {0} x {0}'.format(size))
         print('scale is: {0}, {1}, {2}'.format(scalx, scaly, scalz))
-        print('x points are: ', xpts)
-        print('y points are: ', ypts)
+        print('number x points are: ', xpts)
+        print('number y points are: ', ypts)
         print('baseheight is: ', baseheight)
         print('heightscale is: ', heightscale)
         print('\n-----------------\n')
+
+        if custom_properties is True:
+            print('i am in')
+            # int(offsetX) = xpts * custom_scale
+            # int(offsetY) = ypts * custom_scale
+            pass
 
         terrainName = bmesh.new()
         # Create vertices
         # ---------------
         # read them all...
+        x0 = 0.0
+        y0 = 0.0
+        z0 = 0.0
         for y in range(0, ypts):
             for x in range(0, xpts):
                 (h,) = struct.unpack('h', ter.read(2))
+                # adding custom values
+                if custom_properties is True:
+                    x0 = x * custom_scale
+                    y0 = y * custom_scale
+                    baseheight = baseH
+                    heightscale = heightS
+                    z0 = baseheight + h * heightscale / 65536.0
+                else:
+                    x0 = x
+                    y0 = y
+                    z0 = baseheight + h * heightscale / 65536.0
 
-                z = baseheight + h * heightscale / 65536.0
-                terrainName.verts.new((x, y, z))
+                terrainName.verts.new((x0, y0, z0))
 
                 xmax = x + 1
                 ymax = y + 1

@@ -70,12 +70,12 @@ class ImportTer(Operator, ImportHelper):
         description="set custom properties of the terrain: size, scale,\
         baseheight, heightscale",
         default=False)
-
+    '''
     custom_size = IntProperty(
         name="CustomSize",
         description="set a custom size of the terrain",
         default=128)
-
+    '''
     custom_scale = FloatProperty(
         name="CustomScale",
         description="set a custom scale of the terrain",
@@ -92,7 +92,9 @@ class ImportTer(Operator, ImportHelper):
         default=100)
 
     def execute(self, context):
-        return import_ter(context, self.filepath, self.triangulate)
+        return import_ter(context, self.filepath, self.triangulate,
+                          self.custom_properties, self.custom_scale,
+                          self.baseH, self.heightS)
 
 
 # Only needed if you want to add into a dynamic menu
