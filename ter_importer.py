@@ -30,7 +30,7 @@ import bmesh
 import time
 
 
-def import_ter(context, filepath):
+def import_ter(context, filepath, triangulate):
     start_time = time.process_time()
 
     global size
@@ -158,6 +158,11 @@ def import_ter(context, filepath):
                 v4 = terrainName.verts[a + 1]
 
                 terrainName.faces.new((v1, v2, v3, v4))
+
+        if triangulate is True:
+            # bmesh.ops.triangulate(bm, faces, quad_method, ngon_method)
+            args = bmesh.ops.triangulate(terrainName, faces=terrainName.faces)
+            print('Terrain mesh triangulated!')
 
         mesh = bpy.data.meshes.new("Terrain_mesh")
         terrainName.to_mesh(mesh)

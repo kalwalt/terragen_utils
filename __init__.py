@@ -58,15 +58,14 @@ class ImportTer(Operator, ImportHelper):
         options={'HIDDEN'},
         maxlen=255)  # Max internal buffer length, longer would be clamped.
 
-    '''
     # List of operator properties, the attributes will be assigned
     # to the class instance from the operator settings before calling.
-    use_setting = BoolProperty(
-            name="Example Boolean",
-            description="Example Tooltip",
-            default=True,
-            )
+    triangulate = BoolProperty(
+        name="Triangulate",
+        description="triangulate the terrain mesh",
+        default=False)
 
+    '''
     type = EnumProperty(
             name="Example Enum",
             description="Choose between two items",
@@ -77,7 +76,7 @@ class ImportTer(Operator, ImportHelper):
     '''
 
     def execute(self, context):
-        return import_ter(context, self.filepath)
+        return import_ter(context, self.filepath, self.triangulate)
 
 
 # Only needed if you want to add into a dynamic menu
