@@ -29,7 +29,7 @@ from .ter_importer import import_ter
 # ImportHelper is a helper class, defines filename and
 # invoke() function which calls the file selector.
 from bpy_extras.io_utils import ImportHelper
-from bpy.props import StringProperty, BoolProperty, EnumProperty
+from bpy.props import StringProperty, BoolProperty, EnumProperty, IntProperty, FloatProperty
 from bpy.types import Operator
 
 
@@ -65,15 +65,31 @@ class ImportTer(Operator, ImportHelper):
         description="triangulate the terrain mesh",
         default=False)
 
-    '''
-    type = EnumProperty(
-            name="Example Enum",
-            description="Choose between two items",
-            items=(('OPT_A', "First Option", "Description one"),
-                   ('OPT_B', "Second Option", "Description two")),
-            default='OPT_A',
-            )
-    '''
+    custom_properties = BoolProperty(
+        name="CustomProperties",
+        description="set custom properties of the terrain: size, scale,\
+        baseheight, heightscale",
+        default=False)
+
+    custom_size = IntProperty(
+        name="CustomSize",
+        description="set a custom size of the terrain",
+        default=128)
+
+    custom_scale = FloatProperty(
+        name="CustomScale",
+        description="set a custom scale of the terrain",
+        default=128.0)
+
+    baseH = IntProperty(
+        name="BaseHeight",
+        description="set the baseheight of the terrain",
+        default=0)
+
+    heightS = IntProperty(
+        name="HeightScale",
+        description="set the maximum height of the terrain",
+        default=100)
 
     def execute(self, context):
         return import_ter(context, self.filepath, self.triangulate)
