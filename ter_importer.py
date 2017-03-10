@@ -33,8 +33,8 @@ import time
 def import_ter(context, filepath, triangulate):
     start_time = time.process_time()
 
-    global size
-
+    # global size
+    size = 0
     xpts = 0
     ypts = 0
     scalx = 0
@@ -45,10 +45,9 @@ def import_ter(context, filepath, triangulate):
     heightscale = 0
     baseheight = 0
 
-    size = 0
     try:
         ter = open(filepath, 'rb')
-        print('start...')
+        print('start...\n')
     except IOError:
         if terfile == "":
             print("Terragen ter file does not exist!")
@@ -61,7 +60,7 @@ def import_ter(context, filepath, triangulate):
 
             if ter.read(8).decode() == "TERRAIN ":
 
-                print("Terragen terrain file: continue")
+                print("Terragen terrain file: found -> continue...\n")
             else:
                 print("TERRAIN keyword not found")
                 return None
@@ -77,14 +76,12 @@ def import_ter(context, filepath, triangulate):
             if totest in keys:
                 if totest == "SIZE":
                     print('reading SIZE')
-                    # (size,) = struct.unpack('h', ter.read(2))
-                    size = struct.unpack('h', ter.read(2))
+                    (size,) = struct.unpack('h', ter.read(2))
                     garbage = ter.read(2).decode()
 
                 if totest == 'XPTS':
                     print('reading XPTS')
                     (xpts,) = struct.unpack('h', ter.read(2))
-                    # xpts = struct.unpack('h', ter.read(2))
                     garbage = ter.read(2).decode()
 
                 if totest == 'YPTS':
@@ -117,14 +114,18 @@ def import_ter(context, filepath, triangulate):
                 break
 
         if xpts == 0:
-            xpts = size[0] + 1
+            xpts = size + 1
         if ypts == 0:
-            ypts = size[0] + 1
+            ypts = size + 1
 
+        print('\n-----------------\n')
+        print('size is: {0} x {0}'.format(size))
+        print('scale is: {0}, {1}, {2}'.format(scalx, scaly, scalz))
         print('x points are: ', xpts)
         print('y points are: ', ypts)
         print('baseheight is: ', baseheight)
         print('heightscale is: ', heightscale)
+        print('\n-----------------\n')
 
         terrainName = bmesh.new()
         # Create vertices
@@ -160,7 +161,6 @@ def import_ter(context, filepath, triangulate):
                 terrainName.faces.new((v1, v2, v3, v4))
 
         if triangulate is True:
-            # bmesh.ops.triangulate(bm, faces, quad_method, ngon_method)
             args = bmesh.ops.triangulate(terrainName, faces=terrainName.faces)
             print('Terrain mesh triangulated!')
 
