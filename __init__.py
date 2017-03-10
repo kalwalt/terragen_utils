@@ -58,8 +58,6 @@ class ImportTer(Operator, ImportHelper):
         options={'HIDDEN'},
         maxlen=255)  # Max internal buffer length, longer would be clamped.
 
-    # List of operator properties, the attributes will be assigned
-    # to the class instance from the operator settings before calling.
     triangulate = BoolProperty(
         name="Triangulate",
         description="triangulate the terrain mesh",
@@ -91,6 +89,15 @@ class ImportTer(Operator, ImportHelper):
         description="set the maximum height of the terrain",
         default=100)
 
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, 'triangulate')
+        layout.prop(self, 'custom_properties')
+        if self.custom_properties is True:
+            layout.prop(self, 'custom_scale')
+            layout.prop(self, 'baseH')
+            layout.prop(self, 'heightS')
+
     def execute(self, context):
         return import_ter(context, self.filepath, self.triangulate,
                           self.custom_properties, self.custom_scale,
@@ -102,14 +109,22 @@ def menu_func_import(self, context):
     self.layout.operator(ImportTer.bl_idname, text="Terragen (.ter)")
 
 
+'''
+def menu_func_export(self, context):
+    self.layout.operator(ImportTer.bl_idname, text="Terragen (.ter)")
+'''
+
+
 def register():
     bpy.utils.register_class(ImportTer)
     bpy.types.INFO_MT_file_import.append(menu_func_import)
+    # bpy.types.INFO_MT_file_export.append(menu_func_export)
 
 
 def unregister():
     bpy.utils.unregister_class(ImportTer)
     bpy.types.INFO_MT_file_import.remove(menu_func_import)
+    # bpy.types.INFO_MT_file_export.append(menu_func_export)
 
 
 if __name__ == "__main__":
