@@ -68,12 +68,7 @@ class ImportTer(Operator, ImportHelper):
         description="set custom properties of the terrain: size, scale,\
         baseheight, heightscale",
         default=False)
-    '''
-    custom_size = IntProperty(
-        name="CustomSize",
-        description="set a custom size of the terrain",
-        default=128)
-    '''
+
     custom_scale = FloatProperty(
         name="CustomScale",
         description="set a custom scale of the terrain",
