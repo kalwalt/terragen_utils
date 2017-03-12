@@ -2,7 +2,12 @@
 
 Blender addon to import and export .ter files.
 
-Actually can only import but in a near future will also export a .ter file and maybe the complete project (.tgd).
+The addon may import and export .ter (Terragen) files. In a near future will also
+export a complete project (.tgd).
+
+wiki: https://github.com/kalwalt/terragen_utils/wiki
+
+issue tracker: https://github.com/kalwalt/terragen_utils/issues
 
 For a description and info about Terragen software visit the planetside page:
 http://planetside.co.uk/
