@@ -78,7 +78,9 @@ def import_ter(context, filepath, triangulate, custom_properties,
                 if totest == "SIZE":
                     print('reading SIZE')
                     (size,) = struct.unpack('h', ter.read(2))
-                    garbage = ter.read(2).decode()
+                    # garbage = ter.read(2).decode()
+                    garbage = ter.read(2)
+                    print('garbage :', garbage)
 
                 if totest == 'XPTS':
                     print('reading XPTS')

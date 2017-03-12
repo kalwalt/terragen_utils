@@ -26,9 +26,10 @@ import struct
 import os  # glob
 from os import path, name, sep
 from .ter_importer import import_ter
+from .ter_exporter import export_ter
 # ImportHelper is a helper class, defines filename and
 # invoke() function which calls the file selector.
-from bpy_extras.io_utils import ImportHelper
+from bpy_extras.io_utils import ImportHelper, ExportHelper
 from bpy.props import StringProperty, BoolProperty, EnumProperty, IntProperty, FloatProperty
 from bpy.types import Operator
 
@@ -41,7 +42,8 @@ bl_info = {
     "blender": (2, 78, 0),
     "location": "File > Import-Export",
     "warning": "This addon is still in development.",
-    "wiki_url": "",
+    "wiki_url": "https://github.com/kalwalt/terragen_utils/wiki",
+    "tracker_url": "https://github.com/kalwalt/terragen_utils/issues",
     "category": "Import-Export"}
 
 
@@ -49,8 +51,8 @@ class ImportTer(Operator, ImportHelper):
     """Operator to import .ter Terragen files into blender as obj"""
     bl_idname = "import_ter.data"
     bl_label = "Import .ter"
+    # bl_options = {'UNDO', 'PRESET'}
 
-    # ImportHelper mixin class uses this
     filename_ext = ".ter"
 
     filter_glob = StringProperty(
@@ -99,27 +101,74 @@ class ImportTer(Operator, ImportHelper):
                           self.baseH, self.heightS)
 
 
-# Only needed if you want to add into a dynamic menu
 def menu_func_import(self, context):
     self.layout.operator(ImportTer.bl_idname, text="Terragen (.ter)")
 
 
-'''
+class ExportTer(Operator, ExportHelper):
+    """Operator to export .ter Terragen files"""
+    bl_idname = "export_ter.data"
+    bl_label = "Export .ter"
+    # bl_options = {'UNDO', 'PRESET'}
+
+    filename_ext = ".ter"
+
+    filter_glob = StringProperty(
+        default="*.ter",
+        options={'HIDDEN'},
+        maxlen=255)  # Max internal buffer length, longer would be clamped.
+
+    custom_properties = BoolProperty(
+        name="CustomProperties",
+        description="set custom properties of the terrain: size, scale,\
+        baseheight, heightscale",
+        default=False)
+    '''
+    custom_scale = FloatProperty(
+        name="CustomScale",
+        description="set a custom scale of the terrain",
+        default=128.0)
+
+    baseH = IntProperty(
+        name="BaseHeight",
+        description="set the baseheight of the terrain",
+        default=0)
+
+    heightS = IntProperty(
+        name="HeightScale",
+        description="set the maximum height of the terrain",
+        default=100)
+    '''
+
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, 'custom_properties')
+        if self.custom_properties is True:
+            # layout.prop(self, 'custom_scale')
+            # layout.prop(self, 'baseH')
+            # layout.prop(self, 'heightS')
+            print('ok!')
+
+    def execute(self, context):
+        return export_ter(context, self.filepath)
+
+
 def menu_func_export(self, context):
-    self.layout.operator(ImportTer.bl_idname, text="Terragen (.ter)")
-'''
+    self.layout.operator(ExportTer.bl_idname, text="Terragen (.ter)")
 
 
 def register():
     bpy.utils.register_class(ImportTer)
+    bpy.utils.register_class(ExportTer)
     bpy.types.INFO_MT_file_import.append(menu_func_import)
-    # bpy.types.INFO_MT_file_export.append(menu_func_export)
+    bpy.types.INFO_MT_file_export.append(menu_func_export)
 
 
 def unregister():
     bpy.utils.unregister_class(ImportTer)
+    bpy.utils.unregister_class(ExportTer)
     bpy.types.INFO_MT_file_import.remove(menu_func_import)
-    # bpy.types.INFO_MT_file_export.append(menu_func_export)
+    bpy.types.INFO_MT_file_export.remove(menu_func_export)
 
 
 if __name__ == "__main__":
