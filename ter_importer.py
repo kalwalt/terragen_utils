@@ -148,15 +148,20 @@ def import_ter(context, filepath, triangulate, custom_properties,
                 (h,) = struct.unpack('h', ter.read(2))
                 # adding custom values
                 if custom_properties is True:
-                    x0 = x * custom_scale
-                    y0 = y * custom_scale
+                    x0 = x * custom_scale[0]
+                    y0 = y * custom_scale[1]
                     baseheight = baseH
                     heightscale = heightS
-                    z0 = baseheight + h * heightscale / 65536.0
+                    # the line below is the old code...
+                    # z0 = baseheight + h * heightscale / 65536.0
+                    z0 = custom_scale[2] * (baseheight + (h * heightscale / 65536.0))
                 else:
-                    x0 = x
-                    y0 = y
-                    z0 = baseheight + h * heightscale / 65536.0
+                    # from VTP SetFValue(i, j, scale.z * (BaseHeight + ((float)svalue * HeightScale / 65536.0f)));
+                    x0 = x * scalx
+                    y0 = y * scaly
+                    # the line below is the old code...
+                    # z0 = baseheight + h * heightscale / 65536.0
+                    z0 = scalz * (baseheight + (h * heightscale / 65536.0))
 
                 terrainName.verts.new((x0, y0, z0))
 

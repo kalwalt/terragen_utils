@@ -30,7 +30,7 @@ from .ter_exporter import export_ter
 # ImportHelper is a helper class, defines filename and
 # invoke() function which calls the file selector.
 from bpy_extras.io_utils import ImportHelper, ExportHelper
-from bpy.props import StringProperty, BoolProperty, EnumProperty, IntProperty, FloatProperty
+from bpy.props import StringProperty, BoolProperty, EnumProperty, IntProperty, FloatProperty, FloatVectorProperty
 from bpy.types import Operator
 
 
@@ -71,10 +71,10 @@ class ImportTer(Operator, ImportHelper):
         baseheight, heightscale",
         default=False)
 
-    custom_scale = FloatProperty(
+    custom_scale = FloatVectorProperty(
         name="CustomScale",
         description="set a custom scale of the terrain",
-        default=128.0)
+        default=(30.0, 30.0, 30.0))
 
     baseH = IntProperty(
         name="BaseHeight",
@@ -88,10 +88,14 @@ class ImportTer(Operator, ImportHelper):
 
     def draw(self, context):
         layout = self.layout
+        c = layout.column()
+        c.label(text="Import a .ter file:", icon='IMPORT')
+        layout.separator()
         layout.prop(self, 'triangulate')
         layout.prop(self, 'custom_properties')
         if self.custom_properties is True:
-            layout.prop(self, 'custom_scale')
+            c = layout.column()
+            c.prop(self, 'custom_scale', text='Set the scale(x,y,z)', expand=False)
             layout.prop(self, 'baseH')
             layout.prop(self, 'heightS')
 
@@ -142,7 +146,11 @@ class ExportTer(Operator, ExportHelper):
 
     def draw(self, context):
         layout = self.layout
+        c = layout.column()
+        c.label(text="Export a .ter file:", icon='EXPORT')
+        layout.separator()
         layout.prop(self, 'custom_properties')
+
         if self.custom_properties is True:
             # layout.prop(self, 'custom_scale')
             # layout.prop(self, 'baseH')
