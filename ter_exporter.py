@@ -46,7 +46,7 @@ def pydata_from_obj():
     new = bmesh.new()
     new.from_mesh(mesh)
     verts, edges, faces = pydata_from_bmesh(new)
-    print('verts from bmesh: ', verts)
+    # print('verts from bmesh: ', verts)
     # print(len(verts))
     length_v = len(verts)
     size_points = int(sqrt(length_v))
@@ -92,14 +92,12 @@ def export_ter(context, filepath):
     BaseHeight = 0
     # values are packed as short (i.e = integers max 32767)
     values, size_points = pydata_from_obj()
-    print('z_val from pydata_func: ', values)
+    # print('z_val from pydata_func: ', values)
     print('size_points of mesh is: ', size_points)
     size = size_points - 1
     # calculate the X,Y scale factor
     scalx = scaly = get_grid_spacing(size)
     z_val = [int(p * 4.0) for p in values]
-    # print(z_val)
-    # print(len(z_val))
     eof_tag = 'EOF'  # end of file tag
 
     with open(filename, "wb") as file:
