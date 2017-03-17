@@ -27,10 +27,9 @@ import os  # glob
 from os import path, name, sep
 from .ter_importer import import_ter
 from .ter_exporter import export_ter
-# ImportHelper is a helper class, defines filename and
-# invoke() function which calls the file selector.
 from bpy_extras.io_utils import ImportHelper, ExportHelper
-from bpy.props import StringProperty, BoolProperty, EnumProperty, IntProperty, FloatProperty, FloatVectorProperty
+from bpy.props import (StringProperty, BoolProperty, EnumProperty,
+                       IntProperty, FloatProperty, FloatVectorProperty)
 from bpy.types import Operator
 
 
