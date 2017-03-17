@@ -149,6 +149,7 @@ def import_ter(context, filepath, triangulate, custom_properties,
                     z0 = custom_scale[2] * (baseheight + (h * heightscale / 65536.0))
                 else:
                     # from VTP SetFValue(i, j, scale.z * (BaseHeight + ((float)svalue * HeightScale / 65536.0f)));
+                    # see: https://github.com/kalwalt/terragen_utils/issues/2
                     x0 = x * scalx
                     y0 = y * scaly
                     z0 = scalz * (baseheight + (h * heightscale / 65536.0))
