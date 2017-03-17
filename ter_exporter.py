@@ -54,6 +54,13 @@ def pydata_from_obj():
     return vertices, size_points
 
 
+def get_grid_spacing(size):
+    obj = bpy.context.scene.objects.active
+    dim = obj.dimensions
+    spacing = dim[0] / float(size)
+    return float(spacing)
+
+
 # function (modified version) to map values, from Sverchok addon
 def map_range(x_list, old_min, old_max, new_min, new_max):
     old_d = old_max - old_min
@@ -74,25 +81,25 @@ def export_ter(context, filepath):
     # start to set all the tags and values needed for the .ter file
     ter_header = 'TERRAGENTERRAIN '
     size_tag = 'SIZE'
-    # size = 64
     size = 0
     scal_tag = 'SCAL'
-    scalx = 30.0
-    scaly = 30.0
-    scalz = 30.0
+    scalx = 1.0
+    scaly = 1.0
+    scalz = 1.0
     altw_tag = 'ALTW'
-    HeightScale = 80
+    # HeightScale = 80
+    HeightScale = 16384
     BaseHeight = 0
-    # values are packed as short (i.e = integers max 32767) so we map them in the right range
+    # values are packed as short (i.e = integers max 32767)
     values, size_points = pydata_from_obj()
     print('z_val from pydata_func: ', values)
     print('size_points of mesh is: ', size_points)
     size = size_points - 1
-    # totalpoints = (size + 1) * (size + 1)
-    # we shouuld map with the min and max values (maybe from numpy?)
-    z_val = [int(map_range(p, 0.0, 100.0, 0.0, 32767.0)) for p in values]
-    print(z_val)
-    print(len(z_val))
+    # calculate the X,Y scale factor
+    scalx = scaly = get_grid_spacing(size)
+    z_val = [int(p * 4.0) for p in values]
+    # print(z_val)
+    # print(len(z_val))
     eof_tag = 'EOF'  # end of file tag
 
     with open(filename, "wb") as file:
