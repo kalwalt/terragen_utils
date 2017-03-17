@@ -130,12 +130,6 @@ def import_ter(context, filepath, triangulate, custom_properties,
         print('heightscale is: ', heightscale)
         print('\n-----------------\n')
 
-        if custom_properties is True:
-            print('i am in')
-            # int(offsetX) = xpts * custom_scale
-            # int(offsetY) = ypts * custom_scale
-            pass
-
         terrainName = bmesh.new()
         # Create vertices
         # ---------------
@@ -148,15 +142,17 @@ def import_ter(context, filepath, triangulate, custom_properties,
                 (h,) = struct.unpack('h', ter.read(2))
                 # adding custom values
                 if custom_properties is True:
-                    x0 = x * custom_scale
-                    y0 = y * custom_scale
+                    x0 = x * custom_scale[0]
+                    y0 = y * custom_scale[1]
                     baseheight = baseH
                     heightscale = heightS
-                    z0 = baseheight + h * heightscale / 65536.0
+                    z0 = custom_scale[2] * (baseheight + (h * heightscale / 65536.0))
                 else:
-                    x0 = x
-                    y0 = y
-                    z0 = baseheight + h * heightscale / 65536.0
+                    # from VTP SetFValue(i, j, scale.z * (BaseHeight + ((float)svalue * HeightScale / 65536.0f)));
+                    # see: https://github.com/kalwalt/terragen_utils/issues/2
+                    x0 = x * scalx
+                    y0 = y * scaly
+                    z0 = scalz * (baseheight + (h * heightscale / 65536.0))
 
                 terrainName.verts.new((x0, y0, z0))
 
