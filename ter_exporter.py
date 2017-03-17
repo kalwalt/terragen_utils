@@ -75,7 +75,8 @@ def map_range(x_list, old_min, old_max, new_min, new_max):
 
 ## from terragen_utils.ter_exporter import export_ter
 ## export_ter(0,'/tmp/txt',0,0,0,0)
-def export_ter(context, filepath):
+def export_ter(context, filepath, custom_properties,
+               custom_scale, baseH, heightS):
     start_time = time.process_time()
     filename = filepath + '.ter'
     # start to set all the tags and values needed for the .ter file
@@ -90,6 +91,9 @@ def export_ter(context, filepath):
     # HeightScale = 80
     HeightScale = 16384
     BaseHeight = 0
+    if custom_properties is True:
+        HeightScale = heightS
+        BaseHeight = baseH
     # values are packed as short (i.e = integers max 32767)
     values, size_points = pydata_from_obj()
     # print('z_val from pydata_func: ', values)
@@ -97,6 +101,9 @@ def export_ter(context, filepath):
     size = size_points - 1
     # calculate the X,Y scale factor
     scalx = scaly = get_grid_spacing(size)
+    if custom_properties is True:
+        scalx, scaly, scalz = custom_scale
+
     z_val = [int(p * 4.0) for p in values]
     eof_tag = 'EOF'  # end of file tag
 

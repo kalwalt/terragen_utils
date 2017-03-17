@@ -156,7 +156,8 @@ class ExportTer(Operator, ExportHelper):
             layout.prop(self, 'heightS')
 
     def execute(self, context):
-        return export_ter(context, self.filepath)
+        return export_ter(context, self.filepath, self.custom_properties,
+                          self.custom_scale, self.baseH, self.heightS)
 
 
 def menu_func_export(self, context):
