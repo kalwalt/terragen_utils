@@ -22,6 +22,7 @@ https://www.blender.org/
 ### Arch
 
 For now tested only with linux64 under Ubuntu 16.04.
+Blender version 2.78a.
 
 
 p.s. This addon is still in development there are some issues i hope to fix soon.
