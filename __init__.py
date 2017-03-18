@@ -57,7 +57,7 @@ class ImportTer(Operator, ImportHelper):
     filter_glob = StringProperty(
         default="*.ter",
         options={'HIDDEN'},
-        maxlen=255)  # Max internal buffer length, longer would be clamped.
+        maxlen=255,)  # Max internal buffer length, longer would be clamped.
 
     triangulate = BoolProperty(
         name="Triangulate",
@@ -99,13 +99,9 @@ class ImportTer(Operator, ImportHelper):
             layout.prop(self, 'heightS')
 
     def execute(self, context):
-        return import_ter(context, self.filepath, self.triangulate,
+        return import_ter(self, context, self.filepath, self.triangulate,
                           self.custom_properties, self.custom_scale,
                           self.baseH, self.heightS)
-
-
-def menu_func_import(self, context):
-    self.layout.operator(ImportTer.bl_idname, text="Terragen (.ter)")
 
 
 class ExportTer(Operator, ExportHelper):
@@ -119,7 +115,7 @@ class ExportTer(Operator, ExportHelper):
     filter_glob = StringProperty(
         default="*.ter",
         options={'HIDDEN'},
-        maxlen=255)  # Max internal buffer length, longer would be clamped.
+        maxlen=255,)  # Max internal buffer length, longer would be clamped.
 
     custom_properties = BoolProperty(
         name="CustomProperties",
@@ -156,8 +152,12 @@ class ExportTer(Operator, ExportHelper):
             layout.prop(self, 'heightS')
 
     def execute(self, context):
-        return export_ter(context, self.filepath, self.custom_properties,
+        return export_ter(self, context, self.filepath, self.custom_properties,
                           self.custom_scale, self.baseH, self.heightS)
+
+
+def menu_func_import(self, context):
+    self.layout.operator(ImportTer.bl_idname, text="Terragen (.ter)")
 
 
 def menu_func_export(self, context):

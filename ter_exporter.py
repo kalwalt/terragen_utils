@@ -75,7 +75,7 @@ def map_range(x_list, old_min, old_max, new_min, new_max):
 
 ## from terragen_utils.ter_exporter import export_ter
 ## export_ter(0,'/tmp/txt',0,0,0,0)
-def export_ter(context, filepath, custom_properties,
+def export_ter(operator, context, filepath, custom_properties,
                custom_scale, baseH, heightS):
     start_time = time.process_time()
     filename = filepath + '.ter'
