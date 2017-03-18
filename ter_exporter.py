@@ -78,7 +78,6 @@ def map_range(x_list, old_min, old_max, new_min, new_max):
 def export_ter(operator, context, filepath, custom_properties,
                custom_scale, baseH, heightS):
     start_time = time.process_time()
-    filename = filepath + '.ter'
     # start to set all the tags and values needed for the .ter file
     ter_header = 'TERRAGENTERRAIN '
     size_tag = 'SIZE'
@@ -107,7 +106,7 @@ def export_ter(operator, context, filepath, custom_properties,
     z_val = [int(p * 4.0) for p in values]
     eof_tag = 'EOF'  # end of file tag
 
-    with open(filename, "wb") as file:
+    with open(filepath, "wb") as file:
         # write the header
         file.write(ter_header.encode('ascii'))
         # write the size of the terrain
