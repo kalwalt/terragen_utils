@@ -57,7 +57,7 @@ class ImportTer(Operator, ImportHelper):
     filter_glob = StringProperty(
         default="*.ter",
         options={'HIDDEN'},
-        maxlen=255)  # Max internal buffer length, longer would be clamped.
+        maxlen=255,)  # Max internal buffer length, longer would be clamped.
 
     triangulate = BoolProperty(
         name="Triangulate",
@@ -99,13 +99,9 @@ class ImportTer(Operator, ImportHelper):
             layout.prop(self, 'heightS')
 
     def execute(self, context):
-        return import_ter(context, self.filepath, self.triangulate,
+        return import_ter(self, context, self.filepath, self.triangulate,
                           self.custom_properties, self.custom_scale,
                           self.baseH, self.heightS)
-
-
-def menu_func_import(self, context):
-    self.layout.operator(ImportTer.bl_idname, text="Terragen (.ter)")
 
 
 class ExportTer(Operator, ExportHelper):
@@ -119,18 +115,18 @@ class ExportTer(Operator, ExportHelper):
     filter_glob = StringProperty(
         default="*.ter",
         options={'HIDDEN'},
-        maxlen=255)  # Max internal buffer length, longer would be clamped.
+        maxlen=255,)  # Max internal buffer length, longer would be clamped.
 
     custom_properties = BoolProperty(
         name="CustomProperties",
         description="set custom properties of the terrain: size, scale,\
         baseheight, heightscale",
         default=False)
-    '''
-    custom_scale = FloatProperty(
+
+    custom_scale = FloatVectorProperty(
         name="CustomScale",
         description="set a custom scale of the terrain",
-        default=128.0)
+        default=(30.0, 30.0, 30.0))
 
     baseH = IntProperty(
         name="BaseHeight",
@@ -141,7 +137,6 @@ class ExportTer(Operator, ExportHelper):
         name="HeightScale",
         description="set the maximum height of the terrain",
         default=100)
-    '''
 
     def draw(self, context):
         layout = self.layout
@@ -151,13 +146,18 @@ class ExportTer(Operator, ExportHelper):
         layout.prop(self, 'custom_properties')
 
         if self.custom_properties is True:
-            # layout.prop(self, 'custom_scale')
-            # layout.prop(self, 'baseH')
-            # layout.prop(self, 'heightS')
-            print('ok!')
+            c = layout.column()
+            c.prop(self, 'custom_scale', text='Set the scale(x,y,z)', expand=False)
+            layout.prop(self, 'baseH')
+            layout.prop(self, 'heightS')
 
     def execute(self, context):
-        return export_ter(context, self.filepath)
+        return export_ter(self, context, self.filepath, self.custom_properties,
+                          self.custom_scale, self.baseH, self.heightS)
+
+
+def menu_func_import(self, context):
+    self.layout.operator(ImportTer.bl_idname, text="Terragen (.ter)")
 
 
 def menu_func_export(self, context):

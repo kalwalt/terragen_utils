@@ -30,7 +30,7 @@ import bmesh
 import time
 
 
-def import_ter(context, filepath, triangulate, custom_properties,
+def import_ter(operator, context, filepath, triangulate, custom_properties,
                custom_scale, baseH, heightS):
     start_time = time.process_time()
 
