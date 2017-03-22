@@ -25,7 +25,7 @@ import string
 import struct
 import os  # glob
 from os import path, name, sep
-from .ter_importer import import_ter
+from .ter_importer import import_ter, import_multi
 from .ter_exporter import export_ter
 from bpy_extras.io_utils import ImportHelper, ExportHelper
 from bpy.props import (StringProperty, BoolProperty, EnumProperty,
@@ -85,6 +85,11 @@ class ImportTer(Operator, ImportHelper):
         description="set the maximum height of the terrain",
         default=100)
 
+    import_tiles = BoolProperty(
+        name="Import Tiles",
+        description="import a tiled terrain",
+        default=False)
+
     def draw(self, context):
         layout = self.layout
         c = layout.column()
@@ -97,11 +102,18 @@ class ImportTer(Operator, ImportHelper):
             c.prop(self, 'custom_scale', text='Set the scale(x,y,z)', expand=False)
             layout.prop(self, 'baseH')
             layout.prop(self, 'heightS')
+        c = layout.column()
+        c.label(text="Import a multi tiled terrain:")
+        c.prop(self, 'import_tiles', expand=False)
 
     def execute(self, context):
-        return import_ter(self, context, self.filepath, self.triangulate,
-                          self.custom_properties, self.custom_scale,
-                          self.baseH, self.heightS)
+        if self.import_tiles is True:
+            func = import_multi(self, context, self.filepath)
+        else:
+            func = import_ter(self, context, self.filepath, self.triangulate,
+                              self.custom_properties, self.custom_scale,
+                              self.baseH, self.heightS, shiftX=0, shiftY=0)
+        return func
 
 
 class ExportTer(Operator, ExportHelper):
