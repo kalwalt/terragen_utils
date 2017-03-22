@@ -90,6 +90,16 @@ class ImportTer(Operator, ImportHelper):
         description="import a tiled terrain",
         default=False)
 
+    num_tiles = IntProperty(
+        name="numbers tiles",
+        description="set the number of tiles for each side",
+        default=3)
+
+    name_file = StringProperty(
+        name="name file",
+        description="set the name of file(tiles) to import",
+    )
+
     def draw(self, context):
         layout = self.layout
         c = layout.column()
@@ -105,10 +115,13 @@ class ImportTer(Operator, ImportHelper):
         c = layout.column()
         c.label(text="Import a multi tiled terrain:")
         c.prop(self, 'import_tiles', expand=False)
+        if self.import_tiles is True:
+            c.prop(self, 'num_tiles')
+            c.prop(self, 'name_file')
 
     def execute(self, context):
         if self.import_tiles is True:
-            func = import_multi(self, context, self.filepath)
+            func = import_multi(self, context, self.filepath, self.num_tiles, self.name_file)
         else:
             func = import_ter(self, context, self.filepath, self.triangulate,
                               self.custom_properties, self.custom_scale,

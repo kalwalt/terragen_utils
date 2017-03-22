@@ -128,7 +128,7 @@ def import_ter(operator, context, filepath, triangulate, custom_properties,
     return {'FINISHED'}
 
 
-def import_multi(operator, context, filepath):
+def import_multi(operator, context, filepath, num_tiles, name_file):
     start_time = time.process_time()
 
     if filepath:
@@ -144,12 +144,12 @@ def import_multi(operator, context, filepath):
         ntiles = 2
         shift = size * scalx
         print('shift before is: ', shift)
-        for x in range(0, ntiles):
+        for x in range(0, num_tiles):
             if x == 0:
                 shiftX = 0
             else:
                 shiftX += shift
-            for y in range(0, ntiles):
+            for y in range(0, num_tiles):
                 print('shiftX is: ', shiftX)
                 if y == 0:
                     shiftY = 0
