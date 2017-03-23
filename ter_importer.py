@@ -157,7 +157,7 @@ def import_multi(operator, context, filepath, num_tiles, name_file):
                 else:
                     shiftY += shift
                 path = get_path(filepath, name_file)
-                final_path = path + str(name_file) + '_x' + str(x) + '_y' + str(y) + '.ter'
+                final_path = path + str(name_file) + '_x' + '{:02}'.format(x) + '_y' + '{:02}'.format(y) + '.ter'
                 print('final path: ', final_path)
                 import_ter(operator, context, final_path, triangulate=False, custom_properties=False,
                        custom_scale=1, baseH=0, heightS=0, shiftX=shiftX, shiftY=shiftY)
