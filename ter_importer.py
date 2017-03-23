@@ -139,31 +139,31 @@ def import_multi(operator, context, filepath, num_tiles, name_file):
         scalx = args[3]
         scaly = args[4]
         scalz = args[5]
-        print('scalx is: ', args[3])
+
         shiftX = 0
         shiftY = 0
-        ntiles = 2
+
         shift = size * scalx
-        print('shift before is: ', shift)
+
+        path = get_path(filepath, name_file)
         for x in range(0, num_tiles):
             if x == 0:
                 shiftX = 0
             else:
                 shiftX += shift
             for y in range(0, num_tiles):
-                print('shiftX is: ', shiftX)
                 if y == 0:
                     shiftY = 0
                 else:
                     shiftY += shift
-                path = get_path(filepath, name_file)
+
                 final_path = path + str(name_file) + '_x' + '{:02}'.format(x) + '_y' + '{:02}'.format(y) + '.ter'
-                print('final path: ', final_path)
+
                 import_ter(operator, context, final_path, triangulate=False, custom_properties=False,
                        custom_scale=1, baseH=0, heightS=0, shiftX=shiftX, shiftY=shiftY)
-                print('shiftY is: ', shiftY)
 
-        print('Terrain imported in %.4f sec.' % (time.process_time() - start_time))
+        print('Tiled terrain imported in %.4f sec.' % (time.process_time() - start_time))
+
     return {'FINISHED'}
 
     if __name__ == "__main__":
