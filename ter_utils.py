@@ -7,6 +7,7 @@ from os import path, name, sep
 from math import *
 import bmesh
 import time
+import re
 
 
 def get_headers(filepath):
@@ -92,3 +93,11 @@ def get_headers(filepath):
             else:
                 break
     return size, xpts, ypts, scalx, scaly, scalz, crad, crvm, heightscale, baseheight, ter
+
+
+def get_path(filepath, name_file):
+    indx_path = filepath.find(name_file)
+    path = filepath[:indx_path]
+    print('path is: ', path)
+    print('filepath is : ', filepath)
+    return path

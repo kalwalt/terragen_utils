@@ -29,6 +29,7 @@ from math import *
 import bmesh
 import time
 from .ter_utils import get_headers
+from .ter_utils import get_path
 
 
 def import_ter(operator, context, filepath, triangulate, custom_properties,
@@ -155,7 +156,10 @@ def import_multi(operator, context, filepath, num_tiles, name_file):
                     shiftY = 0
                 else:
                     shiftY += shift
-                import_ter(operator, context, filepath, triangulate=False, custom_properties=False,
+                path = get_path(filepath, name_file)
+                final_path = path + str(name_file) + '_x' + str(x) + '_y' + str(y) + '.ter'
+                print('final path: ', final_path)
+                import_ter(operator, context, final_path, triangulate=False, custom_properties=False,
                        custom_scale=1, baseH=0, heightS=0, shiftX=shiftX, shiftY=shiftY)
                 print('shiftY is: ', shiftY)
 
