@@ -28,93 +28,26 @@ from os import path, name, sep
 from math import *
 import bmesh
 import time
+from .ter_utils import get_headers, get_path, get_extens, get_extens_d
 
 
 def import_ter(operator, context, filepath, triangulate, custom_properties,
-               custom_scale, baseH, heightS):
+               custom_scale, baseH, heightS, shiftX, shiftY):
     start_time = time.process_time()
 
-    # variables initialization
-    size = 0
-    xpts = 0
-    ypts = 0
-    scalx = 0
-    scaly = 0
-    scalz = 0
-    crad = 0
-    crvm = 0
-    heightscale = 0
-    baseheight = 0
-
-    try:
-        ter = open(filepath, 'rb')
-        print('start...\n')
-    except IOError:
-        if terfile == "":
-            print("Terragen ter file does not exist!")
-            Exit()
-        else:
-            print(terfile + " does not exist!")
-    else:
-
-        if ter.read(8).decode() == "TERRAGEN":
-
-            if ter.read(8).decode() == "TERRAIN ":
-
-                print("Terragen terrain file: found -> continue...\n")
-            else:
-                print("TERRAIN keyword not found")
-                return None
-        else:
-            print("TERRAGEN keyword not found")
-            return None
-
-        keys = ['SIZE', 'XPTS', 'YPTS', 'SCAL', 'CRAD', 'CRVM', 'ALTW']
-
-        totest = ter.read(4).decode()
-
-        while 1:
-            if totest in keys:
-                if totest == "SIZE":
-                    print('reading SIZE')
-                    (size,) = struct.unpack('h', ter.read(2))
-                    # garbage = ter.read(2).decode()
-                    garbage = ter.read(2)
-                    print('garbage :', garbage)
-
-                if totest == 'XPTS':
-                    print('reading XPTS')
-                    (xpts,) = struct.unpack('h', ter.read(2))
-                    garbage = ter.read(2).decode()
-
-                if totest == 'YPTS':
-                    print('reading YPTS')
-                    (ypts,) = struct.unpack('h', ter.read(2))
-                    garbage = ter.read(2).decode()
-
-                if totest == 'SCAL':
-                    print('reading SCAL')
-                    (scalx,) = struct.unpack('f', ter.read(4))
-                    (scaly,) = struct.unpack('f', ter.read(4))
-                    (scalz,) = struct.unpack('f', ter.read(4))
-
-                if totest == 'CRAD':
-                    print('reading CRAD')
-                    (crad,) = struct.unpack('f', ter.read(4))
-
-                if totest == 'CRVM':
-                    print('reading CRVM')
-                    (crvm,) = struct.unpack('H', ter.read(2))
-                    garbage = ter.read(2).decode()
-
-                if totest == 'ALTW':
-                    print('reading ALTW')
-                    (heightscale,) = struct.unpack('h', ter.read(2))
-                    (baseheight,) = struct.unpack('h', ter.read(2))
-                    break
-                totest = ter.read(4).decode()
-            else:
-                break
+    if filepath:
+        args = get_headers(filepath)
+        size = args[0]
+        xpts = args[1]
+        ypts = args[2]
+        scalx = args[3]
+        scaly = args[4]
+        scalz = args[5]
+        crad = args[6]
+        crvm = args[7]
+        heightscale = args[8]
+        baseheight = args[9]
+        ter = args[10]
 
         if xpts == 0:
             xpts = size + 1
@@ -150,8 +83,8 @@ def import_ter(operator, context, filepath, triangulate, custom_properties,
                 else:
                     # from VTP SetFValue(i, j, scale.z * (BaseHeight + ((float)svalue * HeightScale / 65536.0f)));
                     # see: https://github.com/kalwalt/terragen_utils/issues/2
-                    x0 = x * scalx
-                    y0 = y * scaly
+                    x0 = x * scalx + shiftX
+                    y0 = y * scaly + shiftY
                     z0 = scalz * (baseheight + (h * heightscale / 65536.0))
 
                 terrainName.verts.new((x0, y0, z0))
@@ -191,6 +124,49 @@ def import_ter(operator, context, filepath, triangulate, custom_properties,
         obj = bpy.data.objects.new("Terrain_obj", mesh)
         scene.objects.link(obj)
         print('Terrain imported in %.4f sec.' % (time.process_time() - start_time))
+
+    return {'FINISHED'}
+
+
+def import_multi(operator, context, filepath, num_tiles, name_file):
+    start_time = time.process_time()
+
+    if filepath:
+        shift = 0.0
+        args = get_headers(filepath)
+        size = args[0]
+        scalx = args[3]
+        scaly = args[4]
+        scalz = args[5]
+
+        shiftX = 0
+        shiftY = 0
+
+        shift = size * scalx
+
+        path = get_path(filepath, name_file)
+        for x in range(0, num_tiles):
+            if x == 0:
+                shiftX = 0
+            else:
+                shiftX += shift
+            for y in range(0, num_tiles):
+                if y == 0:
+                    shiftY = 0
+                else:
+                    shiftY += shift
+
+                if get_extens_d(filepath) == 1:
+                    final_path = path + str(name_file) + '_x' + '{:02}'.format(x) + '_y' + '{:02}'.format(y) + '.ter'
+                elif get_extens(filepath) == 1:
+                    final_path = path + str(name_file) + '_x' + '{:01}'.format(x) + '_y' + '{:01}'.format(y) + '.ter'
+                else:
+                    final_path = path + str(name_file) + '_x' + '{:03}'.format(x) + '_y' + '{:03}'.format(y) + '.ter'
+
+                import_ter(operator, context, final_path, triangulate=False, custom_properties=False,
+                       custom_scale=1, baseH=0, heightS=0, shiftX=shiftX, shiftY=shiftY)
+
+        print('Tiled terrain imported in %.4f sec.' % (time.process_time() - start_time))
 
     return {'FINISHED'}
 
