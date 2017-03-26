@@ -25,3 +25,5 @@ For now tested only with linux64 under Ubuntu 16.04, Blender version 2.78a.
 
 
 p.s. This addon is still in development there are some issues i hope to fix soon.
+
+[![Please donate](https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/walterperdan)
