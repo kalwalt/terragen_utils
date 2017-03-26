@@ -101,3 +101,19 @@ def get_path(filepath, name_file):
     print('path is: ', path)
     print('filepath is : ', filepath)
     return path
+
+
+def get_extens(filepath):
+    e = filepath.find('_x0')
+    if e == -1:
+        return 0
+    else:
+        return 1
+
+
+def get_extens_d(filepath):
+    e = filepath.find('_x00')
+    if e == -1:
+        return 0
+    else:
+        return 1

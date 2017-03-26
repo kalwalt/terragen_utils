@@ -28,8 +28,7 @@ from os import path, name, sep
 from math import *
 import bmesh
 import time
-from .ter_utils import get_headers
-from .ter_utils import get_path
+from .ter_utils import get_headers, get_path, get_extens, get_extens_d
 
 
 def import_ter(operator, context, filepath, triangulate, custom_properties,
@@ -157,7 +156,12 @@ def import_multi(operator, context, filepath, num_tiles, name_file):
                 else:
                     shiftY += shift
 
-                final_path = path + str(name_file) + '_x' + '{:02}'.format(x) + '_y' + '{:02}'.format(y) + '.ter'
+                if get_extens_d(filepath) == 1:
+                    final_path = path + str(name_file) + '_x' + '{:02}'.format(x) + '_y' + '{:02}'.format(y) + '.ter'
+                elif get_extens(filepath) == 1:
+                    final_path = path + str(name_file) + '_x' + '{:01}'.format(x) + '_y' + '{:01}'.format(y) + '.ter'
+                else:
+                    final_path = path + str(name_file) + '_x' + '{:03}'.format(x) + '_y' + '{:03}'.format(y) + '.ter'
 
                 import_ter(operator, context, final_path, triangulate=False, custom_properties=False,
                        custom_scale=1, baseH=0, heightS=0, shiftX=shiftX, shiftY=shiftY)
